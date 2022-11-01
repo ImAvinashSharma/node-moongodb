@@ -96,8 +96,11 @@ app.get("/api/getUser/:id", validateToken, async (req, res) => {
   const { id } = req.params;
   const db = client.db(dbName);
   const collection = db.collection("test");
-  const findResult = await collection.find({ userId: id }).toArray();
-  return res.json(findResult);
+  const data = await collection.find({ userId: id }).toArray();
+  if (id === "f3e83684-bb8e-4f18-8d33-a8ff576f5036") {
+    return res.json({ data, admin: true });
+  }
+  return res.json({ data, admin: false });
 });
 
 app.get("/api/getUserPref/:id", validateToken, async (req, res) => {
@@ -108,12 +111,12 @@ app.get("/api/getUserPref/:id", validateToken, async (req, res) => {
   res.json(data);
 });
 
-app.post("/search", async (req, res) => {
+app.post("/api/search", async (req, res) => {
   const db = client.db(dbName);
   const collection = db.collection("test1");
   let query = {};
 
-  if (req.body.username !== undefined) {
+  if (req.body.name !== undefined) {
     query.name = req.body.name;
   }
   if (req.body.food !== undefined) {
