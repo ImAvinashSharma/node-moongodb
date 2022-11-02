@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 
 function Preferences({ local, data }) {
-  const [userPref,setUserPref] = useState();
-  useEffect(()=>{
-        fetch(`http://localhost:6969/api/getUserPref${local.userId}`, {
+  const [userPref, setUserPref] = useState();
+  useEffect(() => {
+    fetch(`http://localhost:6969/api/getUserPref/${local.userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "token_header_key": local.token,
-      }
+        token_header_key: local.token,
+      },
     })
       .then((res) => {
         return res.json();
@@ -17,9 +17,9 @@ function Preferences({ local, data }) {
         console.log(res);
       })
       .catch((err) => {
-        console.err(err);
+        console.log(err);
       });
-  },[])
+  }, []);
   const [preference, setPreference] = useState({
     Food: "",
     Hobbies: "",

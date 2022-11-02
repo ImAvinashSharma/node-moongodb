@@ -115,7 +115,7 @@ app.get("/api/getUserPref/:id", validateToken, async (req, res) => {
   const { id } = req.params;
   const db = client.db(dbName);
   const collection = db.collection("test2");
-  const data = await collection.find({ "data.userId": id }).toArray();
+  const data = await collection.find({ "userId": id }).toArray();
   res.json(data);
 });
 
