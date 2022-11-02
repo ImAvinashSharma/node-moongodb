@@ -9,7 +9,6 @@ function Admin() {
   if (local === null) {
     window.location.replace("/");
   }
-
   useEffect(() => {
     fetch(`http://localhost:6969/api/getAllPref`, {
       method: "GET",
@@ -36,15 +35,33 @@ function Admin() {
         return res.json();
       })
       .then(res => {
-        console.log(res);
+        // setData(res);
       });
   }, []);
 
   return (
-    <div>
+    <>
       <Navbar data={data} />
-      {JSON.stringify(data)}
-      {/* Form with all params for serach */}
+      <div className="flex justify-center">
+        <form className="flex flex-col m-6 mt-16 p-8 pl-16 pr-16 rounded-lg bg-neutral-200	 drop-shadow-2xl">
+          <InputField name="Food" />
+          <InputField name="Hobbies" />
+          <InputField name="Tsize" />
+          <InputField name="age" />
+          <InputField name="Technology" />
+          <InputField name="Experience" />
+          <button className="bg-cyan-500 p-4 rounded-xl hover:bg-cyan-600 text-white">Submit</button>
+        </form>
+      </div>
+      <div className="flex justify-center">No user Found</div>
+    </>
+  );
+}
+
+function InputField({ name }) {
+  return (
+    <div className="flex mb-3">
+      <input className="mr-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={name} />
     </div>
   );
 }
