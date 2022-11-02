@@ -1,32 +1,14 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 function Preferences({ local, data }) {
-  const [preference, setPreference] = useState({
-    food: "",
-    hobbies: "",
-    tSize: "",
-    age: "",
-    technology: "",
-    experience: "",
-  });
-  const foodRef = useRef();
-  const hobbiesRef = useRef();
-  const tSizeRef = useRef();
-  const ageRef = useRef();
-  const technologyRef = useRef();
-  const experienceRef = useRef();
-  const handleSubmit = () => {
-    fetch(`http://localhost:6969/api/addPref`, {
-      method: "POST",
+  const [userPref,setUserPref] = useState();
+  useEffect(()=>{
+        fetch(`http://localhost:6969/api/getUserPref${local.userId}`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
-        token_header_key: local.token,
-      },
-      body: JSON.stringify({
-        preference,
-        name: data[0].data.name,
-        userId : local.userId
-      }),
+        "token_header_key": local.token,
+      }
     })
       .then((res) => {
         return res.json();
@@ -37,68 +19,106 @@ function Preferences({ local, data }) {
       .catch((err) => {
         console.err(err);
       });
+  },[])
+  const [preference, setPreference] = useState({
+    Food: "",
+    Hobbies: "",
+    Tsize: "",
+    age: "",
+    Technology: "",
+    Experience: "",
+  });
+  const handleSubmit = () => {
+    console.log(preference);
+    // fetch(`http://localhost:6969/api/addPref`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     token_header_key: local.token,
+    //   },
+    //   body: JSON.stringify({
+    //     preference,
+    //     name: data.data[0].data.name,
+    //     userId: local.userId,
+    //   }),
+    // })
+    //   .then((res) => {
+    //     return res.json();
+    //   })
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     console.err(err);
+    //   });
   };
   return (
-    <div className="flex flex-col">
-      <input type="text" ref={foodRef} placeholder="Food habits" />
+    <div className="flex justify-center">
+      <div className="flex flex-col m-6 mt-16 p-8 pl-16 pr-16 rounded-lg bg-neutral-200	 drop-shadow-2xl">
+        <div className="flex justify-center m-2 p-2 text-xl">
+          Hey, {data && data.data[0].data.name}
+        </div>
+        <InputField
+          preference={preference}
+          setPreference={setPreference}
+          name="Food"
+        />
+        <InputField
+          preference={preference}
+          setPreference={setPreference}
+          name="Hobbies"
+        />
+        <InputField
+          preference={preference}
+          setPreference={setPreference}
+          name="Tsize"
+        />
+        <InputField
+          preference={preference}
+          setPreference={setPreference}
+          name="age"
+        />
+        <InputField
+          preference={preference}
+          setPreference={setPreference}
+          name="Technology"
+        />
+        <InputField
+          preference={preference}
+          setPreference={setPreference}
+          name="Experience"
+        />
+        <button
+          className="bg-cyan-500 p-4 rounded-xl hover:bg-cyan-600 text-white"
+          onClick={handleSubmit}
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function InputField({ preference, setPreference, name }) {
+  const referance = useRef();
+  return (
+    <div className="flex mb-3">
+      <input
+        type="text"
+        className="mr-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+        ref={referance}
+        placeholder={name}
+      />
       <button
         type="button"
-        className="bg-slate-500"
-        value="add"
+        className="bg-emerald-500 p-2 rounded-lg text-white"
         onClick={() => {
-          preference.food = foodRef.current.value;
-          setPreference(preference);
-          // console.log(preference);
-        }}
-      >add</button>
-      <input type="text" ref={hobbiesRef} placeholder="hobbies" />
-      <button
-        type="button"
-        value="add"
-        onClick={() => {
-          preference.hobbies = hobbiesRef.current.value;
-          setPreference(preference);
-          // console.log(preference);
-        }}
-      >add</button>
-      <input type="text" ref={tSizeRef} placeholder="Tshirt size" />
-      <button
-        type="button"
-        value="add"
-        onClick={() => {
-          preference.tSize = tSizeRef.current.value;
-          setPreference(preference);
-          // console.log(preference);
-        }}
-      >add</button>
-      <input type="text" ref={ageRef} placeholder="Age" />
-      <button
-        type="button"
-        value="add"
-        onClick={() => {
-          preference.age = ageRef.current.value;
+          preference[name] = referance.current.value;
           setPreference(preference);
         }}
-      >add</button>
-      <input type="text" ref={technologyRef} placeholder="Technologies Known" />
-      <button
-        type="button"
-        value="add"
-        onClick={() => {
-          preference.technology = technologyRef.current.value;
-          setPreference(preference);
-        }}
-      >add</button>
-      <input type="text" ref={experienceRef} placeholder="Experience" />
-      <button
-        type="button"
-        value="add"
-        onClick={() => {
-          preference.experience = experienceRef.current.value;
-          setPreference(preference);
-        }}
-      >add</button>
-      <button className="bg-cyan-400" onClick={handleSubmit}>Submit</button>
+      >
+        Add
+      </button>
     </div>
   );
 }

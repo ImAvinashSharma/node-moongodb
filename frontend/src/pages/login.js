@@ -6,6 +6,7 @@ function Login({ setChange, change }) {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+
   function loginUser(event) {
     event.preventDefault();
     fetch("http://localhost:6969/api/login", {
@@ -27,8 +28,7 @@ function Login({ setChange, change }) {
         }
         navigate("/dashboard");
       })
-      .catch()
-      .finally();
+      .catch(err=>console.log(err))
   }
   return (
     <section className="h-screen">

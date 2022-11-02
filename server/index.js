@@ -33,7 +33,8 @@ app.post("/api/register", async (req, res) => {
   if (oldUser) {
     return res.status(409).send("User Already Exist. Please Login");
   }
-  collection.insertOne({ userId: uuidv4(), data });
+  const data1 = await collection.insertOne({ userId: uuidv4(), data });
+  console.log(data1);
   return res.status(200).json({ status: "Ohk" });
 });
 
@@ -61,11 +62,11 @@ app.post("/api/login", async (req, res) => {
     .toArray();
   if (resDat[0] !== undefined) {
     const token = jwt.sign(resDat[0].data, jwtSecretKey, {
-      expiresIn: "2h"
+      expiresIn: "24h"
     });
     return res.status(200).json({ status: "ok", userId: resDat[0].userId, token });
   } else {
-    return res.status(400).json({ status: "error", user: null });
+    return res.status(400).json({ status: "error" });
   }
 });
 
@@ -73,7 +74,7 @@ app.post("/api/addPref", validateToken, async (req, res) => {
   const data = req.body;
   const db = client.db(dbName);
   const collection = db.collection("test2");
-  collection.insertOne({ data });
+  const result = await collection.insertOne({ data });
   res.json({ data, result });
 });
 
@@ -92,12 +93,19 @@ app.get("/api/getAllPref", validateToken, async (req, res) => {
   return res.json(data);
 });
 
+app.get("/api/getAllUser", validateToken, async (req, res) => {
+  const db = client.db(dbName);
+  const collection = db.collection("test");
+  const data = await collection.find({}).toArray();
+  return res.json(data);
+});
+
 app.get("/api/getUser/:id", validateToken, async (req, res) => {
   const { id } = req.params;
   const db = client.db(dbName);
   const collection = db.collection("test");
   const data = await collection.find({ userId: id }).toArray();
-  if (id === "f3e83684-bb8e-4f18-8d33-a8ff576f5036") {
+  if (id === "13a92195-666f-414c-a0f5-2f9e45e84f87" || id === "8f964774-51a6-4f8c-af61-bfcee0696ba2" || id === "4a1c4045-7cf0-444a-b83c-c021572e0813") {
     return res.json({ data, admin: true });
   }
   return res.json({ data, admin: false });

@@ -1,6 +1,9 @@
 import { React, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Register({ change, setChange }) {
+  const navigate = useNavigate();
+  const [alert, setAlert] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,12 +22,30 @@ function Register({ change, setChange }) {
       .then((res) => {
         return res.json();
       })
-      .then((res) => console.log(res))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        navigate("/");
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        setAlert(true);
+      });
   }
   return (
     <section className="h-screen">
       <div className="px-6 h-full text-gray-800">
+        {alert ? (
+          <div
+            id="toast-simple"
+            className="flex items-center p-4 space-x-4 w-full max-w-xs text-gray-500 bg-white rounded-lg divide-x divide-gray-200 shadow dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800"
+            role="alert"
+          >
+            <div className="pl-4 text-sm font-normal">
+              successfully Registered
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
         <div className="flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6">
           <div className="grow-0 shrink-1 md:shrink-0 basis-auto xl:w-6/12 lg:w-6/12 md:w-9/12 mb-12 md:mb-0">
             <img
@@ -76,7 +97,7 @@ function Register({ change, setChange }) {
                   Login
                 </button>
                 <p className="text-sm font-semibold mt-2 pt-1 mb-0">
-                  have account? 
+                  have account?
                   <a
                     onClick={(e) => setChange(!change)}
                     className="text-red-600 hover:text-red-700 focus:text-red-700 transition duration-200 ease-in-out"

@@ -5,9 +5,7 @@ import Display from "../components/Display";
 
 function Dashboard() {
   const [data, setData] = useState(null);
-
   const local = JSON.parse(localStorage.getItem("user"));
-
   if (local === null) {
     window.location.replace("/");
   }
@@ -16,25 +14,26 @@ function Dashboard() {
     fetch(`http://localhost:6969/api/getUser/${local.userId}`, {
       method: "GET",
       headers: {
-        token_header_key: local.token
-      }
+        token_header_key: local.token,
+      },
     })
-      .then(res => {
+      .then((res) => {
         return res.json();
       })
-      .then(res => {
-        
+      .then((res) => {
         setData(res);
+      })
+      .catch((err) => {
+        alert(err);
       });
   }, []);
   return (
-    <div className="">
-      <div className="">
-        <Navbar data={data} />
-        Welcome {data && data.data[0].data.name}
+    <div>
+      <Navbar data={data} />
+      <div className="justify-items-center">
         <Preferences local={local} data={data} />
-        <Display local={local} />
       </div>
+      {/* <Display local={local} /> */}
     </div>
   );
 }

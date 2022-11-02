@@ -11,7 +11,7 @@ function Admin() {
   }
 
   useEffect(() => {
-    fetch(`http://localhost:6969/api/getUser/${local.userId}`, {
+    fetch(`http://localhost:6969/api/getAllPref`, {
       method: "GET",
       headers: {
         token_header_key: local.token
@@ -25,9 +25,25 @@ function Admin() {
       });
   }, []);
 
+  useEffect(() => {
+    fetch(`http://localhost:6969/api/getAllUser`, {
+      method: "GET",
+      headers: {
+        token_header_key: local.token
+      }
+    })
+      .then(res => {
+        return res.json();
+      })
+      .then(res => {
+        console.log(res);
+      });
+  }, []);
+
   return (
     <div>
       <Navbar data={data} />
+      {JSON.stringify(data)}
       {/* Form with all params for serach */}
     </div>
   );
