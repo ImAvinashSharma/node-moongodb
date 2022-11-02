@@ -105,7 +105,7 @@ function InputField({ preference, setPreference, name }) {
     <div className="flex mb-3">
       <input
         type="text"
-        className="mr-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+        className="mr-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
         ref={referance}
         placeholder={name}
       />
