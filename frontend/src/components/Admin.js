@@ -39,18 +39,25 @@ function Admin() {
       });
   }, []);
 
+  const handleSubmit = e => {
+    e.preventDefault();
+  };
+
   return (
     <>
       <Navbar data={data} />
       <div className="flex justify-center">
         <form className="flex flex-col m-6 mt-16 p-8 pl-16 pr-16 rounded-lg bg-neutral-200	 drop-shadow-2xl">
+          <p className="text-xl">Search</p>
           <InputField name="Food" />
           <InputField name="Hobbies" />
           <InputField name="Tsize" />
           <InputField name="age" />
           <InputField name="Technology" />
           <InputField name="Experience" />
-          <button className="bg-cyan-500 p-4 rounded-xl hover:bg-cyan-600 text-white">Submit</button>
+          <button onClick={handleSubmit} className="bg-cyan-500 p-4 rounded-xl hover:bg-cyan-600 text-white">
+            Submit
+          </button>
         </form>
       </div>
       <div className="flex justify-center">No user Found</div>
