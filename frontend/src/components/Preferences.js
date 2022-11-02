@@ -39,6 +39,27 @@ function Preferences({ local, data }) {
   const handleEdit = () => {
     setChangeSubmit(!changeSubmit);
     console.log(preference);
+    // fetch(`http://localhost:6969/api/updatePref`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     token_header_key: local.token,
+    //   },
+    //   body: JSON.stringify({
+    //     preference,
+    //     name: data.data[0].data.name,
+    //     userId: local.userId,
+    //   }),
+    // })
+    //   .then((res) => {
+    //     return res.json();
+    //   })
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     console.err(err);
+    //   });
   };
 
   const handleSubmit = () => {
@@ -111,7 +132,7 @@ function InputField({ preference, setPreference, name, changeSubmit }) {
   }
   return (
     <div className="flex mb-3">
-      <input disabled type="text" className="mr-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" ref={referance} placeholder={name} />
+      <input disabled type="text" className="mr-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={name} value={preference[name]} />
     </div>
   );
 }

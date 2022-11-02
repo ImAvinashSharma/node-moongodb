@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 
 function Admin() {
   const [data, setData] = useState(null);
-
+  const [user, setUser] = useState(null);
   const local = JSON.parse(localStorage.getItem("user"));
 
   if (local === null) {
@@ -35,7 +35,7 @@ function Admin() {
         return res.json();
       })
       .then(res => {
-        // setData(res);
+        setUser(res);
       });
   }, []);
 
@@ -61,6 +61,15 @@ function Admin() {
         </form>
       </div>
       <div className="flex justify-center">No user Found</div>
+      {user &&
+        user.map((data, id) => {
+          return (
+            <div id={id}>
+              {data.data.name} {"  "}
+              {data.data.email}
+            </div>
+          );
+        })}
     </>
   );
 }
