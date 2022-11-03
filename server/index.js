@@ -130,33 +130,23 @@ app.post("/api/search", async (req, res) => {
   if (req.body.food !== undefined) {
     query.food = req.body.food;
   }
-  if (req.body.workSkills !== undefined) {
-    query.workSkills = { $all: req.body.workSkills };
+  if (req.body.hobbies !== undefined) {
+    query.hobbies = req.body.hobbies;
+  }
+  if (req.body.tsize !== undefined) {
+    query.tsize = req.body.tsize;
+  }
+  if (req.body.age !== undefined) {
+    query.age = req.body.age;
+  }
+  if (req.body.technology !== undefined) {
+    query.technology = req.body.technology;
   }
   if (req.body.experience !== undefined) {
     query.experience = { $gte: req.body.experience };
   }
-  if (req.body.roles !== undefined) {
-    query.roles = req.body.roles;
-  }
-  if (req.body.foodHabbits !== undefined) {
-    query.foodHabbits = { $all: req.body.foodHabbits };
-  }
-  if (req.body.shirtSize !== undefined) {
-    query.shirtSize = req.body.shirtSize;
-  }
-  if (req.body.sports !== undefined) {
-    query.sports = { $all: req.body.sports };
-  }
-  if (req.body.talents !== undefined) {
-    query.talents = { $all: req.body.talents };
-  }
-  if (req.body.worktype !== undefined) {
-    query.worktype = req.body.worktype;
-  }
   console.log(query);
-  // const query = {professionalSkills:{$all:['react']}}
-  //console.log(query);
+
   const result = await collection.find(query);
   var array = [];
   await result.forEach(data => {
