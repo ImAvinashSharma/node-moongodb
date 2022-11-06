@@ -3,9 +3,9 @@ const app = express();
 const cors = require("cors");
 const dotenv = require("dotenv");
 const { validateToken, getUserById } = require("./validation");
-const { addPref, updatePref, getAllPref, getAllPrefById } = require("./preferences");
+const { preferences, getAllPref, getAllPrefById } = require("./preferences");
 const { db } = require("./mongodb");
-const { register } = require("./auth/register");
+const { register, prePreference } = require("./auth/register");
 const { login } = require("./auth/login");
 const { search } = require("./search");
 
@@ -14,22 +14,13 @@ app.use(express.json());
 app.use(cors());
 dotenv.config();
 
-app.post("/api/register", register);
+app.post("/api/register", register, prePreference);
 
 app.post("/api/login", login);
 
-app.post("/api/addPref", validateToken, addPref);
-
-app.post("/api/updatePref", validateToken, updatePref);
+app.post("/api/preferences", validateToken, preferences);
 
 app.get("/api/getAllPref", validateToken, getAllPref);
-
-// For Testing
-app.get("/search", async (req, res) => {
-  const collection = db.collection("test2");
-  const result = await collection.find().toArray();
-  res.json(result);
-});
 
 app.get("/api/getUser/:id", validateToken, getUserById);
 

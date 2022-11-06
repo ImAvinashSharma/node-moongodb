@@ -1,12 +1,14 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const jwt = require("jsonwebtoken");
+const { db } = require("./mongodb");
 
 const getUserById = async (req, res) => {
   const { id } = req.params;
-  const collection = db.collection("test");
+  const collection = db.collection("userTest");
   const data = await collection.find({ userId: id }).toArray();
-  if (data[0] !== undefined) {
+  delete data[0].password;
+  if (data[0].name == "Avinash Sharma") {
     return res.json({ data, admin: true });
   }
   return res.json({ data, admin: false });

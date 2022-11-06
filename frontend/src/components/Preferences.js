@@ -1,8 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 
-function Preferences({ local, data }) {
+function Preferences({ local }) {
   const [changeSubmit, setChangeSubmit] = useState(true);
-  const [userPref, setUserPref] = useState();
+  const [userPref, setUserPref] = useState({
+    Food: "",
+    Hobbies: "",
+    Tsize: "",
+    age: "",
+    Technology: "",
+    Experience: ""
+  });
+
   useEffect(() => {
     fetch(`http://localhost:6969/api/getUserPref/${local.userId}`, {
       method: "GET",
@@ -15,57 +23,18 @@ function Preferences({ local, data }) {
         return res.json();
       })
       .then(res => {
-        setUserPref(res);
+        setUserPref(res[0]);
       })
       .catch(err => {
         console.log(err);
       });
   }, []);
-  let perFlightData = {
-    Food: "",
-    Hobbies: "",
-    Tsize: "",
-    age: "",
-    Technology: "",
-    Experience: ""
-  };
 
-  if (userPref) {
-    perFlightData = userPref;
-  }
-
-  const [preference, setPreference] = useState(perFlightData);
-
-  const handleEdit = () => {
-    setChangeSubmit(!changeSubmit);
-    console.log("edit");
-    // fetch(`http://localhost:6969/api/updatePref`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     token_header_key: local.token,
-    //   },
-    //   body: JSON.stringify({
-    //     preference,
-    //     name: data.data[0].data.name,
-    //     userId: local.userId,
-    //   }),
-    // })
-    //   .then((res) => {
-    //     return res.json();
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((err) => {
-    //     console.err(err);
-    //   });
-  };
+  const [preference, setPreference] = useState(userPref);
 
   const handleSubmit = () => {
     setChangeSubmit(!changeSubmit);
-    console.log("submit");
-    fetch(`http://localhost:6969/api/addPref`, {
+    fetch(`http://localhost:6969/api/preferences`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +42,7 @@ function Preferences({ local, data }) {
       },
       body: JSON.stringify({
         preference,
-        name: data.data[0].data.name,
+        name: local.name,
         userId: local.userId
       })
     })
@@ -90,7 +59,7 @@ function Preferences({ local, data }) {
   return (
     <div className="flex justify-center">
       <div className="flex flex-col m-6 mt-16 p-8 pl-16 pr-16 rounded-lg bg-neutral-200	 drop-shadow-2xl">
-        <div className="flex justify-center m-2 p-2 text-xl">Hey, {data && data.data[0].data.name}</div>
+        <div className="flex justify-center m-2 p-2 text-xl"> Hey, {local && local.name} </div>
         <InputField changeSubmit={changeSubmit} preference={preference} setPreference={setPreference} name="Food" />
         <InputField changeSubmit={changeSubmit} preference={preference} setPreference={setPreference} name="Hobbies" />
         <InputField changeSubmit={changeSubmit} preference={preference} setPreference={setPreference} name="Tsize" />
@@ -98,23 +67,11 @@ function Preferences({ local, data }) {
         <InputField changeSubmit={changeSubmit} preference={preference} setPreference={setPreference} name="Technology" />
         <InputField changeSubmit={changeSubmit} preference={preference} setPreference={setPreference} name="Experience" />
         {changeSubmit ? (
-          <button
-            className="bg-cyan-500 p-4 rounded-xl hover:bg-cyan-600 text-white"
-            onClick={() => {
-              if (userPref === null) {
-                console.log(userPref);
-                handleEdit();
-              } else {
-                handleSubmit();
-              }
-            }}
-          >
+          <button className="bg-cyan-500 p-4 rounded-xl hover:bg-cyan-600 text-white" onClick={handleSubmit}>
             Submit
           </button>
         ) : (
-          <button className="bg-cyan-500 p-4 rounded-xl hover:bg-cyan-600 text-white" onClick={handleEdit}>
-            Edit
-          </button>
+          <button className="bg-cyan-500 p-4 rounded-xl hover:bg-cyan-600 text-white">Edit</button>
         )}
       </div>
     </div>
