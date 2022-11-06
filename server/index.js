@@ -1,159 +1,41 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const jwt = require("jsonwebtoken");
-const { MongoClient } = require("mongodb");
-const { v4: uuidv4 } = require("uuid");
 const dotenv = require("dotenv");
-const { validateToken } = require("./validation");
+const { validateToken, getUserById } = require("./validation");
+const { addPref, updatePref, getAllPref, getAllPrefById } = require("./preferences");
+const { db } = require("./mongodb");
+const { register } = require("./auth/register");
+const { login } = require("./auth/login");
+const { search } = require("./search");
 
 // MiddlewareStack
 app.use(express.json());
 app.use(cors());
 dotenv.config();
 
-const url = "mongodb://20.244.48.206:27017";
-const client = new MongoClient(url);
+app.post("/api/register", register);
 
-const dbName = "test";
+app.post("/api/login", login);
 
-(async () => {
-  await client.connect();
-  console.log("Connected successfully to MongoDB");
-})();
+app.post("/api/addPref", validateToken, addPref);
 
-app.post("/api/register", async (req, res) => {
-  const data = req.body;
-  const db = client.db(dbName);
-  const collection = db.collection("test");
-  if (!(data.email && data.password && data.name)) {
-    res.status(400).send("All input is required");
-  }
-  const oldUser = await collection.findOne({ email: data.email });
-  if (oldUser) {
-    return res.status(409).send("User Already Exist. Please Login");
-  }
-  const data1 = await collection.insertOne({ userId: uuidv4(), data });
-  console.log(data1);
-  return res.status(200).json({ status: "Ohk" });
-});
+app.post("/api/updatePref", validateToken, updatePref);
 
-// For testing purposes
-app.get("/api/getData", validateToken, async (req, res) => {
-  const db = client.db(dbName);
-  const collection = db.collection("test");
-  const findResult = await collection.find({}).toArray();
-  return res.json(findResult);
-});
+app.get("/api/getAllPref", validateToken, getAllPref);
 
-app.post("/api/login", async (req, res) => {
-  const { email, password } = req.body;
-  if (!(email && password)) {
-    return res.status(400).send("All input is required");
-  }
-  const db = client.db(dbName);
-  const collection = db.collection("test");
-  const jwtSecretKey = process.env.JWT_SECRET_KEY;
-  const resDat = await collection
-    .find({
-      "data.email": email,
-      "data.password": password
-    })
-    .toArray();
-  if (resDat[0] !== undefined) {
-    const token = jwt.sign(resDat[0].data, jwtSecretKey, {
-      expiresIn: "24h"
-    });
-    return res.status(200).json({ status: "ok", userId: resDat[0].userId, token });
-  } else {
-    return res.status(400).json({ status: "error" });
-  }
-});
-
-app.post("/api/addPref", validateToken, async (req, res) => {
-  const data = req.body;
-  const db = client.db(dbName);
+// For Testing
+app.get("/search", async (req, res) => {
   const collection = db.collection("test2");
-  const result = await collection.insertOne({ data });
-  res.json({ data, result });
+  const result = await collection.find().toArray();
+  res.json(result);
 });
 
-app.post("/api/updatePref", validateToken, async (req, res) => {
-  const data = req.body;
-  const db = client.db(dbName);
-  const collection = db.collection("test2");
-  const result = await collection.updateOne({ "data.userId": data.userId }, { $set: { data } });
-  res.json({ data, result });
-});
+app.get("/api/getUser/:id", validateToken, getUserById);
 
-app.get("/api/getAllPref", validateToken, async (req, res) => {
-  const db = client.db(dbName);
-  const collection = db.collection("test1");
-  const data = await collection.find({}).toArray();
-  return res.json(data);
-});
+app.get("/api/getUserPref/:id", validateToken, getAllPrefById);
 
-app.get("/api/getAllUser", validateToken, async (req, res) => {
-  const db = client.db(dbName);
-  const collection = db.collection("test");
-  const data = await collection.find({}).toArray();
-  return res.json(data);
-});
-
-app.get("/api/getUser/:id", validateToken, async (req, res) => {
-  const { id } = req.params;
-  const db = client.db(dbName);
-  const collection = db.collection("test");
-  const data = await collection.find({ userId: id }).toArray();
-  if (id === "13a92195-666f-414c-a0f5-2f9e45e84f87" || id === "8f964774-51a6-4f8c-af61-bfcee0696ba2" || id === "4a1c4045-7cf0-444a-b83c-c021572e0813") {
-    return res.json({ data, admin: true });
-  }
-  return res.json({ data, admin: false });
-});
-
-app.get("/api/getUserPref/:id", validateToken, async (req, res) => {
-  const { id } = req.params;
-  const db = client.db(dbName);
-  const collection = db.collection("test2");
-  const data = await collection.find({ "userId": id }).toArray();
-  res.json(data);
-});
-
-app.post("/api/search", async (req, res) => {
-  const db = client.db(dbName);
-  const collection = db.collection("test1");
-  let query = {};
-
-  if (req.body.name !== undefined) {
-    query.name = req.body.name;
-  }
-  if (req.body.food !== undefined) {
-    query.food = req.body.food;
-  }
-  if (req.body.hobbies !== undefined) {
-    query.hobbies = req.body.hobbies;
-  }
-  if (req.body.tsize !== undefined) {
-    query.tsize = req.body.tsize;
-  }
-  if (req.body.age !== undefined) {
-    query.age = req.body.age;
-  }
-  if (req.body.technology !== undefined) {
-    query.technology = req.body.technology;
-  }
-  if (req.body.experience !== undefined) {
-    query.experience = { $gte: req.body.experience };
-  }
-  console.log(query);
-
-  const result = await collection.find(query);
-  var array = [];
-  await result.forEach(data => {
-    array.push(data);
-  });
-  res.json(array);
-});
+app.post("/api/search", validateToken, search);
 
 app.listen(6969, () => {
   console.log("port 6969");
