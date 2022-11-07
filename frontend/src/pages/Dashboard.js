@@ -19,7 +19,7 @@ function Dashboard() {
         return res.json();
       })
       .then(res => {
-        setData(res.data[0]);
+        setData(res);
       })
       .catch(err => {
         alert(err);

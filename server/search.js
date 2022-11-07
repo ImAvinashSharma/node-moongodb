@@ -3,7 +3,6 @@ const { db } = require("./mongodb");
 const search = async (req, res) => {
   const collection = db.collection("preferencesTest");
   let query = {};
-
   if (req.body.name !== undefined) {
     query.name = req.body.name;
   }
@@ -28,7 +27,6 @@ const search = async (req, res) => {
   if (req.body.Experience !== undefined) {
     query.Experience = { $gte: req.body.Experience };
   }
-  console.log("query", query);
   const result = await collection.find(query).toArray();
   return res.json(result);
 };
