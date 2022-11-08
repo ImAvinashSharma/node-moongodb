@@ -1,0 +1,21 @@
+name: build
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v2
+        - name: Node setup
+          with:
+            node-version: 16.x
+        - name: Docker compose
+          run: |
+            docker-compose build
+
