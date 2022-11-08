@@ -1,4 +1,4 @@
-name: build
+name: Node.js CI
 
 on:
   push:
@@ -16,6 +16,6 @@ on:
           with:
             node-version: 16.x
         - name: Docker compose
-          run: |
+        -  run: |
             docker-compose build
 
