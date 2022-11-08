@@ -14,6 +14,7 @@ on:
         - name: Checkout
           uses: actions/checkout@v2
         - name: Docker compose
+          id: build-image
           run: |
             docker-compose build
 
