@@ -16,5 +16,5 @@ jobs:
       - name: Docker compose
         id: build-image
         run: |
-          apt-get update && apt-get upgrade && docker-compose build
+          docker-compose build
 
